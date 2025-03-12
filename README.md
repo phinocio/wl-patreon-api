@@ -1,0 +1,1 @@
+Simple API wrapper for Patreon API to provide news/patron names for the UltSky Launcher, without needing the launcher to ship with an API Key.
