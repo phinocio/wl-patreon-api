@@ -10,22 +10,26 @@ use Patreon\API;
 class PatronService
 {
     /**
-     * @var API
+     * @var TokenService
      */
-    private $apiClient;
+    private $tokenService;
 
     /**
      * Create a new PatronService instance.
      */
-    public function __construct()
+    public function __construct(TokenService $tokenService)
     {
-        $token = Token::first();
+        $this->tokenService = $tokenService;
+    }
 
-        if (! $token) {
-            throw new \RuntimeException('No Patreon token found in database. Unable to initialize API client.');
-        }
+    /**
+     * Get API client initialized with the current token
+     */
+    private function getApiClient(): API
+    {
+        $token = $this->tokenService->getToken();
 
-        $this->apiClient = new API($token->access);
+        return new API($token->access);
     }
 
     /**
@@ -33,12 +37,13 @@ class PatronService
      */
     public function generatePatrons(): void
     {
-        $patronsUrl = $this->buildPatronsUrl();
+        $apiClient = $this->getApiClient();
+        $patronsUrl = $this->buildPatronsUrl($apiClient);
         $allPatrons = collect();
         $nextLink = $patronsUrl;
 
         while ($nextLink) {
-            $response = $this->apiClient->get_data($nextLink);
+            $response = $apiClient->get_data($nextLink);
             $patrons = $this->processApiResponse($response);
             $allPatrons = $allPatrons->concat($patrons);
 
@@ -51,9 +56,9 @@ class PatronService
     /**
      * Build the patrons URL for the campaign
      */
-    private function buildPatronsUrl(): string
+    private function buildPatronsUrl(API $apiClient): string
     {
-        $campaignResponse = $this->apiClient->fetch_campaigns();
+        $campaignResponse = $apiClient->fetch_campaigns();
 
         if (! isset($campaignResponse['data'][0]['id'])) {
             throw new \RuntimeException('Failed to fetch campaign ID');
