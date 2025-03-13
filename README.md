@@ -1,1 +1,7 @@
-Simple API wrapper for Patreon API to provide news/patron names for the UltSky Launcher, without needing the launcher to ship with an API Key.
+# Wildlander Patreon API Wrapper
+
+Wrapper for the Patreon API so we can provide patron and post information to the Wildlander Launcher.
+
+## Usage
+
+Populate the relevant env fields in `.env`, then run `php artisan patreon:init-token`. Afterwards everything should be automated.
