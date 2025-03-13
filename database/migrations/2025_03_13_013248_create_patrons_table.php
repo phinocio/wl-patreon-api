@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('patreon_tokens', function (Blueprint $table) {
+        Schema::create('patrons', function (Blueprint $table) {
             $table->id();
-            $table->string('access');
-            $table->string('refresh');
-            $table->string('client_secret');
-            $table->string('expires_in');
-            $table->timestamp('expires');
+            $table->json('patrons');
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('patreon_tokens');
+        Schema::dropIfExists('patrons');
     }
 };
