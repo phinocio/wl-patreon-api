@@ -48,6 +48,10 @@ class PatronService
             $allPatrons = $allPatrons->concat($patrons);
 
             $nextLink = $response['links']['next'] ?? false;
+
+            if ($nextLink) {
+                $nextLink = str_replace($apiClient->api_endpoint, '', $nextLink);
+            }
         }
 
         $this->storePatrons($allPatrons);

@@ -48,6 +48,10 @@ class PostService
             $allPosts = $allPosts->concat($posts);
 
             $nextLink = $response['links']['next'] ?? false;
+
+            if ($nextLink) {
+                $nextLink = str_replace($apiClient->api_endpoint, '', $nextLink);
+            }
         }
 
         $this->storePosts($allPosts);
